@@ -92,7 +92,10 @@ if sys.argv[1] == "bdist_wheel":
     # if the models are not present
     # download and extract the models from nihui/rife-ncnn-vulkan
     if not MODELS_PATH.exists():
-        download_models()
+        #download_models()
+        os.mkdir(MODELS_PATH)
+    
+    shutil.rmtree(MODELS_PATH)
 
 
 setuptools.setup(
