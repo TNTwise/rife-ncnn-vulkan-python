@@ -111,7 +111,8 @@ class Rife:
             return image0
         elif timestep == 1.:
             return image1
-
+        image0 = cv2.cvtColor(image0, cv2.COLOR_BGR2RGB)
+        image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
         image0_bytes = bytearray(image0.tobytes())
         image1_bytes = bytearray(image1.tobytes())
         channels = int(len(image0_bytes) / (image0.shape[1] * image0.shape[0]))
@@ -130,7 +131,7 @@ class Rife:
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
         
-        res = np.frombuffer(self.raw_out_image.get_data(), dtype=np.uint8).reshape(
+        res = np.frombuffer(output_bytes, dtype=np.uint8).reshape(
             image0.shape[0], image0.shape[1], channels
         )
         return cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
