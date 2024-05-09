@@ -87,15 +87,15 @@ cmake_flags = [
 cmake_flags.extend(os.environ.get("CMAKE_FLAGS", "").split())
 
 # when building bdist wheels/installing the package
-if sys.argv[1] == "bdist_wheel":
 
     # if the models are not present
     # download and extract the models from nihui/rife-ncnn-vulkan
-    if not MODELS_PATH.exists():
-        #download_models()
-        os.mkdir(MODELS_PATH)
-    
-    shutil.rmtree(MODELS_PATH)
+if not MODELS_PATH.exists():
+    #download_models()
+    os.mkdir(MODELS_PATH)
+
+shutil.rmtree(MODELS_PATH)
+os.mkdir(MODELS_PATH)
 
 
 setuptools.setup(
