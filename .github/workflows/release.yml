@@ -64,7 +64,8 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.198.1/windows/VulkanSDK-1.2.198.1-Installer.exe?Human=true -OutFile VulkanSDK-1.2.198.1-Installer.exe
           7z x -aoa ./VulkanSDK-1.2.198.1-Installer.exe -oVulkanSDK
-          
+          dir
+          Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\Samples, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32, .\VulkanSDK\Bin32, .\VulkanSDK\Lib32 -Recurse
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
