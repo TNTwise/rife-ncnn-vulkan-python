@@ -147,7 +147,7 @@ class Rife:
         :param shape: The shape of the images.
         :param channels: The number of channels in the images.
 
-        :return: The processed image.
+        :return: The processed image, format: np.ndarray.
         """
         
         if timestep == 0.:
@@ -159,29 +159,30 @@ class Rife:
             height, width, channels = image0.shape
         else:
             height, width = shape
-            
-        if self.image0_bytes is None:
-            self.image0_bytes = bytearray(image0.tobytes())
-            output_bytes = bytearray(len(self.image0_bytes))
-
-            raw_in_image0 = wrapped.Image(
-                self.image0_bytes, width, height, channels
-            )
-            raw_out_image = wrapped.Image(
-                output_bytes, width, height, channels
-            )
 
         image1_bytes = bytearray(image1.tobytes())
-
         raw_in_image1 = wrapped.Image(
             image1_bytes, width, height, channels
         )
 
+        if self.image0_bytes is None:
+            self.image0_bytes = bytearray(image0.tobytes())
+            raw_in_image0 = wrapped.Image(
+                self.image0_bytes, width, height, channels
+            )
+        else:
+            raw_in_image0 = wrapped.Image(
+                self.image0_bytes, width, height, channels
+            )
+
+        output_bytes = bytearray(len(self.image0_bytes))
+        raw_out_image = wrapped.Image(
+            output_bytes, width, height, channels
+        )
+
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
 
-        self.image0_bytes = output_bytes
-
-        raw_in_image0 = raw_in_image1
+        self.image0_bytes = image1_bytes
 
         return np.frombuffer(output_bytes, dtype=np.uint8).reshape(
             height, width, channels
