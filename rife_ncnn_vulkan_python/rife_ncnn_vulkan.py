@@ -37,6 +37,7 @@ class Rife:
         uhd_mode: bool = False,
         num_threads: int = 1,
     ):
+        self.image0_bytes = None
         # scale must be a power of 2
         if (scale & (scale - 1)) == 0:
             self.scale = scale
@@ -136,6 +137,54 @@ class Rife:
         )
         return cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
         
+    def process_fast(self, image0: np.ndarray, image1: np.ndarray, timestep: float = 0.5, shape: tuple = None, channels: int = 3) -> np.ndarray:
+        """
+        An attempt at a faster implementation for NCNN that should speed it up significantly through better caching methods.
 
+        :param image0: The first image to be processed.
+        :param image1: The second image to be processed.
+        :param timestep: The timestep value for the interpolation.
+        :param shape: The shape of the images.
+        :param channels: The number of channels in the images.
+
+        :return: The processed image.
+        """
+        
+        if timestep == 0.:
+            return np.array(image0)
+        elif timestep == 1.:
+            return np.array(image1)
+
+        if shape is None:
+            height, width, channels = image0.shape
+        else:
+            height, width = shape
+            
+        if self.image0_bytes is None:
+            self.image0_bytes = bytearray(image0.tobytes())
+            output_bytes = bytearray(len(self.image0_bytes))
+
+            raw_in_image0 = wrapped.Image(
+                self.image0_bytes, width, height, channels
+            )
+            raw_out_image = wrapped.Image(
+                output_bytes, width, height, channels
+            )
+
+        image1_bytes = bytearray(image1.tobytes())
+
+        raw_in_image1 = wrapped.Image(
+            image1_bytes, width, height, channels
+        )
+
+        self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
+
+        self.image0_bytes = output_bytes
+
+        raw_in_image0 = raw_in_image1
+
+        return np.frombuffer(output_bytes, dtype=np.uint8).reshape(
+            height, width, channels
+        )
 class RIFE(Rife):
     ...
