@@ -170,21 +170,22 @@ class Rife:
             raw_in_image0 = wrapped.Image(
                 self.image0_bytes, width, height, channels
             )
+            self.output_bytes = bytearray(len(self.image0_bytes))
         else:
             raw_in_image0 = wrapped.Image(
                 self.image0_bytes, width, height, channels
             )
 
-        output_bytes = bytearray(len(self.image0_bytes))
+        
         raw_out_image = wrapped.Image(
-            output_bytes, width, height, channels
+            self.output_bytes, width, height, channels
         )
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
 
         self.image0_bytes = image1_bytes
 
-        return np.frombuffer(output_bytes, dtype=np.uint8).reshape(
+        return np.frombuffer(self.output_bytes, dtype=np.uint8).reshape(
             height, width, channels
         )
 class RIFE(Rife):
