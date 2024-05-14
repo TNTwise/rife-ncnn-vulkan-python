@@ -207,29 +207,30 @@ class Rife:
 
         :return: The processed image, format: torch.uint8
         """
-        if shape is None:
-            height, width, channels = image0.shape
-        else:
-            height, width = shape
+        if self.height is None:
+            if shape is None:
+                self.height, self.width, self.channels = image0.shape
+            else:
+                self.height, self.width = shape
 
         image1_bytes = bytearray(image1)
         raw_in_image1 = wrapped.Image(
-            image1_bytes, width, height, channels
+            image1_bytes, self.width, self.height, self.channels
         )
 
         if self.image0_bytes is None:
             self.image0_bytes = bytearray(image0)
             raw_in_image0 = wrapped.Image(
-                self.image0_bytes, width, height, channels
+                self.image0_bytes, self.width, self.height, self.channels
             )
             self.output_bytes = bytearray(len(self.image0_bytes))
         else:
             raw_in_image0 = wrapped.Image(
-                self.image0_bytes, width, height, channels
+                self.image0_bytes, self.width, self.height, self.channels
             )
 
         raw_out_image = wrapped.Image(
-            self.output_bytes, width, height, channels
+            self.output_bytes, self.width, self.height, self.channels
         )
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
@@ -237,7 +238,7 @@ class Rife:
         self.image0_bytes = image1_bytes
 
         return torch.frombuffer(self.output_bytes, dtype=torch.uint8).reshape(
-            height, width, channels
+            self.height, self.width, self.channels
         )
     
 class RIFE(Rife):
