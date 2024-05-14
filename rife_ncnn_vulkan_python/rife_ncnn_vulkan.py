@@ -24,7 +24,10 @@ if __package__ is None:
     import rife_ncnn_vulkan_wrapper as wrapped
 else:
     wrapped = importlib.import_module(f"{__package__}.rife_ncnn_vulkan_wrapper")
-
+try:
+    import torch
+except:
+    pass
 
 class Rife:
     def __init__(
@@ -38,6 +41,7 @@ class Rife:
         num_threads: int = 1,
     ):
         self.image0_bytes = None
+        self.height = None
         # scale must be a power of 2
         if (scale & (scale - 1)) == 0:
             self.scale = scale
@@ -46,13 +50,14 @@ class Rife:
 
         # determine if rife-v2 is used
         rife_v2 = ("rife-v2" in model) or ("rife-v3" in model)
-        rife_v4 = "rife-v4" in model or "rife4" in model or "rife-4" in model:
+        rife_v4 = "rife-v4" in model or "rife4" in model or "rife-4" in model
 
         # create raw RIFE wrapper object
         self._rife_object = wrapped.RifeWrapped(
             gpuid, tta_mode, tta_temporal_mode, uhd_mode, num_threads, rife_v2, rife_v4
         )
         self._load(model)
+        
 
     def _load(self, model: str, model_dir: pathlib.Path = None):
 
@@ -155,30 +160,31 @@ class Rife:
         elif timestep == 1.:
             return np.array(image1)
 
-        if shape is None:
-            height, width, channels = image0.shape
-        else:
-            height, width = shape
+        if self.height == None:
+            if shape is None:
+                self.height, self.width, self.channels = image0.shape
+            else:
+                self.height, self.width = shape
 
         image1_bytes = bytearray(image1.tobytes())
         raw_in_image1 = wrapped.Image(
-            image1_bytes, width, height, channels
+            image1_bytes, self.width, self.height, channels
         )
 
         if self.image0_bytes is None:
             self.image0_bytes = bytearray(image0.tobytes())
             raw_in_image0 = wrapped.Image(
-                self.image0_bytes, width, height, channels
+                self.image0_bytes, self.width, self.height, channels
             )
             self.output_bytes = bytearray(len(self.image0_bytes))
         else:
             raw_in_image0 = wrapped.Image(
-                self.image0_bytes, width, height, channels
+                self.image0_bytes, self.width, self.height, channels
             )
 
         
         raw_out_image = wrapped.Image(
-            self.output_bytes, width, height, channels
+            self.output_bytes, self.width, self.height, channels
         )
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
@@ -186,7 +192,59 @@ class Rife:
         self.image0_bytes = image1_bytes
 
         return np.frombuffer(self.output_bytes, dtype=np.uint8).reshape(
-            height, width, channels
+            self.height, self.width, self.channels
+        )
+    
+    def process_fast_torch(self, image0: torch.Tensor, image1: torch.Tensor, timestep: float = 0.5, shape: tuple = None, channels: int = 3) -> torch.Tensor:
+        """
+        An attempt at a faster implementation for NCNN that should speed it up significantly through better caching methods.
+
+        :param image0: The first image to be processed.
+        :param image1: The second image to be processed.
+        :param timestep: The timestep value for the interpolation.
+        :param shape: The shape of the images.
+        :param channels: The number of channels in the images.
+
+        :return: The processed image, format: np.ndarray.
+        """
+        
+        if timestep == 0.:
+            return np.array(image0)
+        elif timestep == 1.:
+            return np.array(image1)
+        if self.height == None:
+            if shape is None:
+                self.height, self.width, self.channels = image0.shape
+            else:
+                self.height, self.width = shape
+
+        image1_bytes = bytearray(image1.tobytes())
+        raw_in_image1 = wrapped.Image(
+            image1_bytes, self.width, self.height, channels
+        )
+
+        if self.image0_bytes is None:
+            self.image0_bytes = bytearray(image0.tobytes())
+            raw_in_image0 = wrapped.Image(
+                self.image0_bytes, self.width, self.height, channels
+            )
+            self.output_bytes = bytearray(len(self.image0_bytes))
+        else:
+            raw_in_image0 = wrapped.Image(
+                self.image0_bytes, self.width, self.height, channels
+            )
+
+        
+        raw_out_image = wrapped.Image(
+            self.output_bytes, self.width, self.height, channels
+        )
+
+        self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
+
+        self.image0_bytes = image1_bytes
+
+        return torch.frombuffer(self.output_bytes, dtype=torch.uint8).reshape(
+            self.height, self.width, self.channels
         )
 class RIFE(Rife):
     ...
