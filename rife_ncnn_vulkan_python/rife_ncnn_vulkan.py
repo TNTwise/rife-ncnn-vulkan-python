@@ -117,30 +117,30 @@ class Rife:
             return image0
         elif timestep == 1.:
             return image1
-        image0 = cv2.cvtColor(image0, cv2.COLOR_BGR2RGB)
-        image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
+        
         image0_bytes = bytearray(image0.tobytes())
         image1_bytes = bytearray(image1.tobytes())
-        channels = int(len(image0_bytes) / (image0.shape[1] * image0.shape[0]))
-        output_bytes = bytearray(len(image0_bytes))
+        if self.channels == None:
+            
+            self.channels = int(len(image0_bytes) / (image0.shape[1] * image0.shape[0]))
+            self.output_bytes = bytearray(len(image0_bytes))
 
         # convert image bytes into ncnn::Mat Image
         raw_in_image0 = wrapped.Image(
-            image0_bytes, image0.shape[1], image0.shape[0], channels
+            image0_bytes, image0.shape[1], image0.shape[0], self.channels
         )
         raw_in_image1 = wrapped.Image(
-            image1_bytes, image0.shape[1], image0.shape[0], channels
+            image1_bytes, image0.shape[1], image0.shape[0], self.channels
         )
         raw_out_image = wrapped.Image(
-            output_bytes, image0.shape[1], image0.shape[0], channels
+            self.output_bytes, image0.shape[1], image0.shape[0], self.channels
         )
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
         
-        res = np.frombuffer(output_bytes, dtype=np.uint8).reshape(
-            image0.shape[0], image0.shape[1], channels
+        return np.frombuffer(self.output_bytes, dtype=np.uint8).reshape(
+            image0.shape[0], image0.shape[1], self.channels
         )
-        return cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
         
     def process_fast(self, image0: np.ndarray, image1: np.ndarray, timestep: float = 0.5, shape: tuple = None, channels: int = 3) -> np.ndarray:
         """
@@ -173,14 +173,11 @@ class Rife:
 
         if self.image0_bytes is None:
             self.image0_bytes = bytearray(image0.tobytes())
-            raw_in_image0 = wrapped.Image(
-                self.image0_bytes, self.width, self.height, channels
-            )
             self.output_bytes = bytearray(len(self.image0_bytes))
-        else:
-            raw_in_image0 = wrapped.Image(
-                self.image0_bytes, self.width, self.height, channels
-            )
+        
+        raw_in_image0 = wrapped.Image(
+            self.image0_bytes, self.width, self.height, channels
+        )
 
         
         raw_out_image = wrapped.Image(
