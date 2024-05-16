@@ -41,6 +41,7 @@ class Rife:
         num_threads: int = 1,
     ):
         self.image0_bytes = None
+        self.channels = None
         self.height = None
         # scale must be a power of 2
         if (scale & (scale - 1)) == 0:
