@@ -121,10 +121,9 @@ class Rife:
         
         image0_bytes = bytearray(image0.tobytes())
         image1_bytes = bytearray(image1.tobytes())
-        if self.channels == None:
             
-            self.channels = int(len(image0_bytes) / (image0.shape[1] * image0.shape[0]))
-            self.output_bytes = bytearray(len(image0_bytes))
+        self.channels = int(len(image0_bytes) / (image0.shape[1] * image0.shape[0]))
+        self.output_bytes = bytearray(len(image0_bytes))
 
         # convert image bytes into ncnn::Mat Image
         raw_in_image0 = wrapped.Image(
