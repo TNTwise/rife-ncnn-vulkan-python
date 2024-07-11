@@ -39,10 +39,16 @@ class Rife:
         tta_temporal_mode: bool = False,
         uhd_mode: bool = False,
         num_threads: int = 1,
+        channels: int = 3,
+        width: int = 1920,
+        height: int = 1080,
     ):
         self.image0_bytes = None
         self.channels = None
-        self.height = None
+        self.height = height
+        self.width = width
+        self.channels = channels
+        self.output_bytes = bytearray(width*height*channels)
         # scale must be a power of 2
         if (scale & (scale - 1)) == 0:
             self.scale = scale
@@ -141,6 +147,29 @@ class Rife:
         return np.frombuffer(self.output_bytes, dtype=np.uint8).reshape(
             image0.shape[0], image0.shape[1], self.channels
         )
+        
+    def process_bytes(self, image0, image1, timestep: float = 0.5) -> np.ndarray:
+        if timestep == 0.:
+            return image0
+        elif timestep == 1.:
+            return image1
+            
+        
+
+        # convert image bytes into ncnn::Mat Image
+        raw_in_image0 = wrapped.Image(
+            image0_bytes, self.width, self.height, self.channels
+        )
+        raw_in_image1 = wrapped.Image(
+            image1_bytes, self.width, self.height, self.channels
+        )
+        raw_out_image = wrapped.Image(
+            self.output_bytes, self.width, self.height, self.channels
+        )
+
+        self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
+        
+        return self.output_bytes
         
     def process_fast(self, image0: np.ndarray, image1: np.ndarray, timestep: float = 0.5, shape: tuple = None, channels: int = 3) -> np.ndarray:
         """
