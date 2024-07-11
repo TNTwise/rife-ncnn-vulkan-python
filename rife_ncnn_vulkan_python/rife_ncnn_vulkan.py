@@ -148,11 +148,11 @@ class Rife:
             image0.shape[0], image0.shape[1], self.channels
         )
         
-    def process_bytes(self, image0, image1, timestep: float = 0.5) -> np.ndarray:
+    def process_bytes(self, image0_bytes, image1_bytes, timestep: float = 0.5) -> np.ndarray:
         if timestep == 0.:
-            return image0
+            return image0_bytes
         elif timestep == 1.:
-            return image1
+            return image1_bytes
             
         
 
