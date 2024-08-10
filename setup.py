@@ -83,8 +83,6 @@ def download_models() -> None:
 cmake_flags = [
     "-DBUILD_SHARED_LIBS:BOOL=OFF",
     "-DCALL_FROM_SETUP_PY:BOOL=ON",
-    '-DCMAKE_CXX_COMPILER="C:/MinGW-w64/mingw64/bin/g++.exe"',
-    '-DCMAKE_C_COMPILER="C:/MinGW-w64/mingw64/bin/gcc.exe"'
 ]
 cmake_flags.extend(os.environ.get("CMAKE_FLAGS", "").split())
 
