@@ -153,8 +153,9 @@ class Rife:
             return image0_bytes
         elif timestep == 1.:
             return image1_bytes
-            
         
+        image0_bytes = bytearray(image0_bytes)
+        image1_bytes = bytearray(image1_bytes)
 
         # convert image bytes into ncnn::Mat Image
         raw_in_image0 = wrapped.Image(
@@ -169,7 +170,7 @@ class Rife:
 
         self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
         
-        return self.output_bytes
+        return bytes(self.output_bytes)
         
     def process_fast(self, image0: np.ndarray, image1: np.ndarray, timestep: float = 0.5, shape: tuple = None, channels: int = 3) -> np.ndarray:
         """
