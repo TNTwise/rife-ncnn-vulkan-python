@@ -14,7 +14,7 @@ option(USE_SYSTEM_NCNN "build with system libncnn" OFF)
 option(USE_STATIC_MOLTENVK "link moltenvk static library" OFF)
 
 find_package(Threads)
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
 find_package(Vulkan REQUIRED)
 
 # Python
