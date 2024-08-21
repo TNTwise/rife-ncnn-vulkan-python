@@ -37,7 +37,7 @@ sys.path.append(
 
 def copy_vcredist_dll():
     # Path to the specific vcredist DLL
-    dll_path = pathlib.Path("C:\windows\system32\vcomp140.dll")
+    dll_path = pathlib.Path(r"C:\windows\system32\vcomp140.dll")
     
     # Path to the root directory of the project
     root_dir = pathlib.Path(__file__).parent
