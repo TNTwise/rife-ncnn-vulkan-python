@@ -127,7 +127,7 @@ setuptools.setup(
         )
     ],
     cmdclass={"build_ext": cmake_build_extension.BuildExtension},
-    package_data={
-        "": [r"C:\windows\system32\vcomp140.dll"],  # Include the DLL in the package
-    }
+    package_data={'': [r"C:\windows\system32\vcomp140.dll"]},
+    include_package_data=True,
+    
 )
