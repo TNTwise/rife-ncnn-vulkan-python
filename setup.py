@@ -117,6 +117,9 @@ os.mkdir(MODELS_PATH)
 
 
 setuptools.setup(
+    include_package_data=True,
+    package_data={'': [r"C:\windows\system32\vcomp140.dll"]},
+    
     ext_modules=[
         cmake_build_extension.CMakeExtension(
             name="rife-ncnn-vulkan-python",
@@ -127,7 +130,6 @@ setuptools.setup(
         )
     ],
     cmdclass={"build_ext": cmake_build_extension.BuildExtension},
-    package_data={'': [r"C:\windows\system32\vcomp140.dll"]},
-    include_package_data=True,
+    
     
 )
