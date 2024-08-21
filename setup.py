@@ -118,7 +118,7 @@ os.mkdir(MODELS_PATH)
 
 setuptools.setup(
     include_package_data=True,
-    package_data={'': [r"C:\windows\system32\vcomp140.dll"]},
+    data_files={'': [r"C:\windows\system32\vcomp140.dll"]},
     
     ext_modules=[
         cmake_build_extension.CMakeExtension(
