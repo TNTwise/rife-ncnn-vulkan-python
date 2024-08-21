@@ -35,6 +35,20 @@ sys.path.append(
     )
 )
 
+def copy_vcredist_dll():
+    # Path to the specific vcredist DLL
+    dll_path = pathlib.Path("C:\windows\system32\vcomp140.dll")
+    
+    # Path to the root directory of the project
+    root_dir = pathlib.Path(__file__).parent
+    
+    # Copy the DLL to the root directory
+    shutil.copy(dll_path, root_dir)
+
+# Call the function to copy vcredist DLLs if on Windows
+if os.name == 'nt':
+    copy_vcredist_dll()
+
 # external modules must be imported after the hack
 import cmake_build_extension
 import requests
