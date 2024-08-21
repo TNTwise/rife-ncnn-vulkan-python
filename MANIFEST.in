@@ -1,4 +1,4 @@
 recursive-include rife_ncnn_vulkan_python/rife-ncnn-vulkan/src *
-include rife_ncnn_vulkan_python/rife-ncnn-vulkan/vcomp140.dll
+include rife_ncnn_vulkan_python/vcomp140.dll
 include rife_ncnn_vulkan_python/rife-ncnn-vulkan/LICENSE
 include rife_ncnn_vulkan_python/rife-ncnn-vulkan/README.md
