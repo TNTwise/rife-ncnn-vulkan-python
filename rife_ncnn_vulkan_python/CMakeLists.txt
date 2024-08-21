@@ -6,9 +6,7 @@ project(rife-ncnn-vulkan-python)
 
 cmake_minimum_required(VERSION 3.9)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE release CACHE STRING "Choose the type of build" FORCE)
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall")
 
 option(USE_SYSTEM_NCNN "build with system libncnn" OFF)
 option(USE_STATIC_MOLTENVK "link moltenvk static library" OFF)
