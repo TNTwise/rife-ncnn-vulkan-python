@@ -16,6 +16,10 @@ MODELS_PATH = (
     / "rife-ncnn-vulkan"
     / "models"
 )
+ROOT_PATH = (
+    pathlib.Path(__file__).parent
+    / "rife_ncnn_vulkan_python"
+)
 
 # HACK: allows pip to load user site packages when running setup
 if "PYTHONNOUSERSITE" in os.environ:
@@ -39,14 +43,14 @@ def copy_vcredist_dll():
     # Path to the specific vcredist DLL
     dll_path = pathlib.Path(r"C:\windows\system32\vcomp140.dll")
     
-    # Path to the root directory of the project
-    root_dir = pathlib.Path(__file__).parent
+    
+    print("root dir" + str(ROOT_PATH))
     
     # Copy the DLL to the root directory
-    shutil.copy(dll_path, root_dir)
+    shutil.copy(dll_path, ROOT_PATH)
 
 # Call the function to copy vcredist DLLs if on Windows
-if os.name == 'nt':
+if sys.platform == "win32":
     copy_vcredist_dll()
 
 # external modules must be imported after the hack
