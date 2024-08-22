@@ -84,7 +84,7 @@ jobs:
       - name: Get .whl file name
         id: get-whl
         run: |
-          FOR /F "tokens=*" %%i IN ('dir /b dist\*.whl') DO (SET WHL_FILE=dist\%%i)
+          for /f "tokens=*" %%i in ('dir /b dist\*.whl') do set WHL_FILE=dist\%%i
           echo WHL_FILE=%WHL_FILE% >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
