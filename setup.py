@@ -20,6 +20,7 @@ ROOT_PATH = (
     pathlib.Path(__file__).parent
     / "rife_ncnn_vulkan_python"
 )
+DLL_PATH = ROOT_PATH /  "vcomp140.dll"
 
 # HACK: allows pip to load user site packages when running setup
 if "PYTHONNOUSERSITE" in os.environ:
@@ -56,7 +57,9 @@ if sys.platform == "win32":
 # external modules must be imported after the hack
 import cmake_build_extension
 import requests
-
+# Ensure the DLL file exists in the correct location
+if not DLL_PATH.exists():
+    raise FileNotFoundError(f"vcomp.dll not found at {DLL_PATH}")
 
 def download(url, chunk_size=4096):
     # create a temporary file to contain the downloaded file
@@ -123,7 +126,7 @@ setuptools.setup(
             install_prefix="rife_ncnn_vulkan_python",
             include_package_data=True,  # Include package data as specified in MANIFEST.in
             package_data={
-                '': [f'{ROOT_PATH}/*'],  # Include all files in the data directory
+                'rife_ncnn_vulkan_python': [f'vcomp140.dll'],  # Include all files in the data directory
             },
             write_top_level_init="from .rife_ncnn_vulkan import Rife, RIFE, wrapped",
             source_dir=str(pathlib.Path(__file__).parent / "rife_ncnn_vulkan_python"),
