@@ -84,16 +84,16 @@ jobs:
       - name: Get .whl file name
         id: get-whl
         run: |
-            $WHL_FILE = Get-ChildItem -name dist\*.whl
-            echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
+            $WHL_FILE = Get-ChildItem -Path dist -Filter *.whl -Name
+            echo "WHL_FILE=dist\$WHL_FILE" >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/${{ env.WHL_FILE }}
-          asset_name: dist/${{ env.WHL_FILE }}
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip
 
   ubuntu:
