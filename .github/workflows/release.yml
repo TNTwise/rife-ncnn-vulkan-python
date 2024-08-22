@@ -116,6 +116,8 @@ jobs:
       - name: Build
         run: |
           python -m build -w .
+          cd dist
+          ls
       
       - name: Upload
         uses: actions/upload-release-asset@v1
@@ -172,15 +174,19 @@ jobs:
           export VULKAN_SDK=`pwd`/1.2.198.1/x86_64
           export CMAKE_FLAGS="-DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
-      
+      - name: Get .whl file name
+        id: get-whl
+        run: |
+          WHL_FILE=$(ls dist/*.whl)
+          echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/*.whl
-          asset_name: dist/*.whl
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip
 
   macos:
