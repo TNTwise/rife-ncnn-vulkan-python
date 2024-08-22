@@ -81,21 +81,19 @@ jobs:
           $env:VULKAN_SDK="$(pwd)\VulkanSDK"
           $env:CMAKE_FLAGS="-DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
-      - name: Package
+      - name: Get .whl file name
+        id: get-whl
         run: |
-          mkdir ${{ env.PACKAGENAME }}
-          Copy-Item -Verbose -Path "README.md" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Path "LICENSE" -Destination "${{ env.PACKAGENAME }}"
-          Copy-Item -Verbose -Recurse -Path dist\* -Destination "${{ env.PACKAGENAME }}"
-          7z a -r ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip ${{ env.PACKAGENAME }}
+          FOR /F "tokens=*" %%i IN ('dir /b dist\*.whl') DO (SET WHL_FILE=dist\%%i)
+          echo WHL_FILE=%WHL_FILE% >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
-          asset_name: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip
 
   ubuntu:
@@ -116,17 +114,20 @@ jobs:
       - name: Build
         run: |
           python -m build -w .
-          cd dist
-          ls
-      
+          
+      - name: Get .whl file name
+        id: get-whl
+        run: |
+          WHL_FILE=$(ls dist/*.whl)
+          echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/*.whl
-          asset_name: dist/*.whl
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip
 
   ubuntu-1804:
@@ -234,13 +235,17 @@ jobs:
           -DVulkan_LIBRARY=`pwd`/vulkansdk-macos-1.2.162.0/MoltenVK/MoltenVK.xcframework/macos-arm64_x86_64/libMoltenVK.a \
           -DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
-     
+      - name: Get .whl file name
+        id: get-whl
+        run: |
+            WHL_FILE=$(ls dist/*.whl)
+            echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/*.whl
-          asset_name: dist/*.whl
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip

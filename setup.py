@@ -106,13 +106,10 @@ os.mkdir(MODELS_PATH)
 
 
 setuptools.setup(
-    include_package_data=True,  # Include package data as specified in MANIFEST.in
-    package_data={
-        'rife_ncnn_vulkan_python': [f'{ROOT_PATH}/*'],  # Include all files in the data directory
-    },
+    
     ext_modules=[
         cmake_build_extension.CMakeExtension(
-            name="rife-ncnn-vulkan-python",
+            name="rife-ncnn-vulkan-python-tntwise",
             install_prefix="rife_ncnn_vulkan_python",
             
             write_top_level_init="from .rife_ncnn_vulkan import Rife, RIFE, wrapped",
