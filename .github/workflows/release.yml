@@ -121,15 +121,14 @@ jobs:
           mkdir -p ${{ env.PACKAGENAME }}
           cp README.md LICENSE ${{ env.PACKAGENAME }}
           cp -r dist/* ${{ env.PACKAGENAME }}
-          zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.PACKAGENAME }}.zip
-          asset_name: ${{ env.PACKAGENAME }}.zip
+          asset_path: ${{ env.PACKAGENAME }}
+          asset_name: ${{ env.PACKAGENAME }}
           asset_content_type: application/zip
 
   ubuntu-1804:
@@ -182,15 +181,14 @@ jobs:
           mkdir -p ${{ env.PACKAGENAME }}
           cp README.md LICENSE ${{ env.PACKAGENAME }}
           cp -r dist/* ${{ env.PACKAGENAME }}
-          zip -9 -r ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip ${{ env.PACKAGENAME }}
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
-          asset_name: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
+          asset_path: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}
+          asset_name: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}
           asset_content_type: application/zip
 
   macos:
@@ -243,13 +241,12 @@ jobs:
           mkdir -p ${{ env.PACKAGENAME }}
           cp README.md LICENSE ${{ env.PACKAGENAME }}
           cp -r dist/* ${{ env.PACKAGENAME }}
-          zip -9 -r ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip ${{ env.PACKAGENAME }}
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
-          asset_name: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}.zip
+          asset_path: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}
+          asset_name: ${{ env.PACKAGENAME }}_${{ matrix.python-version }}
           asset_content_type: application/zip
