@@ -84,7 +84,7 @@ jobs:
       - name: Get .whl file name
         id: get-whl
         run: |
-            $WHL_FILE = Get-ChildItem -name dist\*.whl
+            $whl_file = Get-ChildItem -Path dist -Filter *.whl -Name
             echo "WHL_FILE=dist\$whl_file" >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
