@@ -92,8 +92,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/${{ env.WHL_FILE }}
-          asset_name: dist/${{ env.WHL_FILE }}
+          asset_path: ${{ env.WHL_FILE }}
+          asset_name: ${{ env.WHL_FILE }}
           asset_content_type: application/zip
 
   ubuntu:
