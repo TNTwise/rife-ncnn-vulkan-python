@@ -40,19 +40,7 @@ sys.path.append(
     )
 )
 
-def copy_vcredist_dll():
-    # Path to the specific vcredist DLL
-    dll_path = pathlib.Path(r"C:\windows\system32\vcomp140.dll")
-    
-    
-    print("root dir" + str(ROOT_PATH))
-    
-    # Copy the DLL to the root directory
-    shutil.copy(dll_path, ROOT_PATH)
 
-# Call the function to copy vcredist DLLs if on Windows
-if sys.platform == "win32":
-    copy_vcredist_dll()
 
 # external modules must be imported after the hack
 import cmake_build_extension
@@ -98,8 +86,6 @@ def download_models() -> None:
                 pathlib.Path(tempdir) / archive.namelist()[0] / "models", MODELS_PATH
             )
 
-    # remove the temporary files/dirs
-    rife_ncnn_vulkan_zip.unlink()
 
 cmake_flags = [
     "-DBUILD_SHARED_LIBS:BOOL=OFF",
@@ -121,12 +107,12 @@ os.mkdir(MODELS_PATH)
 
 setuptools.setup(
     include_package_data=True,  # Include package data as specified in MANIFEST.in
-            package_data={
-                'rife_ncnn_vulkan_python': [f'vcomp140.dll'],  # Include all files in the data directory
-            },
+    package_data={
+        'rife_ncnn_vulkan_python': [f'{ROOT_PATH}/*'],  # Include all files in the data directory
+    },
     ext_modules=[
         cmake_build_extension.CMakeExtension(
-            name="rife-ncnn-vulkan-python-tntwise",
+            name="rife-ncnn-vulkan-python",
             install_prefix="rife_ncnn_vulkan_python",
             
             write_top_level_init="from .rife_ncnn_vulkan import Rife, RIFE, wrapped",

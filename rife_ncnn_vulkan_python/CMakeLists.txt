@@ -352,6 +352,7 @@ if(CALL_FROM_SETUP_PY)
           LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
   install(DIRECTORY rife-ncnn-vulkan/models DESTINATION ${CMAKE_INSTALL_PREFIX})
   install(FILES rife_ncnn_vulkan.py DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(FILES vcomp140.dll DESTINATION ${CMAKE_INSTALL_PREFIX})
 else()
   file(COPY rife-ncnn-vulkan/models
        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/rife_ncnn_vulkan_python)
