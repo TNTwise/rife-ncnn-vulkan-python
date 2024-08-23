@@ -84,8 +84,8 @@ jobs:
       - name: Get .whl file name
         id: get-whl
         run: |
-          for /f "tokens=*" %%i in ('dir /b dist\*.whl') do set WHL_FILE=dist\%%i
-          echo WHL_FILE=%WHL_FILE% >> $GITHUB_ENV
+          $whl_files = Get-ChildItem -Path . -Filter *.whl -Recurse
+          echo WHL_FILE=$whl_files >> $GITHUB_ENV
       - name: Upload
         uses: actions/upload-release-asset@v1
         env:
