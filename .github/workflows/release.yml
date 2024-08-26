@@ -116,7 +116,7 @@ jobs:
         with:
           path: dist
 
-  ubuntu-1804:
+  linux:
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
@@ -225,3 +225,27 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: dist
+  Release:
+    needs: [setup, macos, windows, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: asset
+  
+      - name: dist
+        run: |
+          mkdir dist
+          cp asset/artifact/* dist
+          cd dist && ls
+  
+      
+      - name: Create Release and Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ needs.setup.outputs.DATE }}
+          tag_name: ${{ needs.setup.outputs.DATE }}
+          body: Auto Release.
+          draft: false
+          prerelease: false
+          files: dist/*
