@@ -44,11 +44,15 @@ class Rife:
         height: int = 1080,
     ):
         self.image0_bytes = None
+        self.raw_in_image0 = None
         self.channels = None
         self.height = height
         self.width = width
         self.channels = channels
         self.output_bytes = bytearray(width*height*channels)
+        self.raw_out_image = wrapped.Image(
+            self.output_bytes, self.width, self.height, self.channels
+        )
         # scale must be a power of 2
         if (scale & (scale - 1)) == 0:
             self.scale = scale
@@ -153,6 +157,7 @@ class Rife:
         Used in instances where the scene change is active, and the frame needs to be uncached.
         """
         self.image0_bytes = None
+        self.raw_in_image0 = None
         
 
     def process_bytes(self, image0_bytes, image1_bytes, timestep: float = 0.5) -> np.ndarray:
@@ -163,23 +168,20 @@ class Rife:
         
         if self.image0_bytes is None:
             self.image0_bytes = bytearray(image0_bytes)
-        
+            self.raw_in_image0 = wrapped.Image(
+                self.image0_bytes, self.width, self.height, self.channels
+            )
         image1_bytes = bytearray(image1_bytes)
-
-        # convert image bytes into ncnn::Mat Image
-        raw_in_image0 = wrapped.Image(
-            self.image0_bytes, self.width, self.height, self.channels
-        )
+        
         raw_in_image1 = wrapped.Image(
             image1_bytes, self.width, self.height, self.channels
         )
-        raw_out_image = wrapped.Image(
-            self.output_bytes, self.width, self.height, self.channels
-        )
+        
 
-        self._rife_object.process(raw_in_image0, raw_in_image1, timestep, raw_out_image)
+        self._rife_object.process(self.raw_in_image0, raw_in_image1, timestep, self.raw_out_image)
         
         self.image0_bytes = image1_bytes
+        self.raw_in_image0 = raw_in_image1
 
         return bytes(self.output_bytes)
         
