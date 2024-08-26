@@ -81,20 +81,11 @@ jobs:
           $env:VULKAN_SDK="$(pwd)\VulkanSDK"
           $env:CMAKE_FLAGS="-DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
-      - name: Get .whl file name
-        id: get-whl
-        run: |
-            $WHL_FILE = Get-ChildItem -Path dist -Filter *.whl -Name
-            echo "WHL_FILE=dist\$WHL_FILE" >> $GITHUB_ENV
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     
+      - name: upload
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.WHL_FILE }}
-          asset_name: ${{ env.WHL_FILE }}
-          asset_content_type: application/zip
+          path: dist
 
   ubuntu:
     needs: [setup, create-release]
