@@ -19,31 +19,14 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-  create-release:
-    needs:
-      - setup
-    name: Create Relase
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.setup.outputs.VERSION }}
-          release_name: Release ${{ needs.setup.outputs.VERSION }}
-          draft: true
-          prerelease: false
+
 
   windows:
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
 
-    needs: [setup, create-release]
+    needs: [setup]
 
     runs-on: windows-latest
     env:
@@ -88,7 +71,7 @@ jobs:
           path: dist
 
   ubuntu:
-    needs: [setup, create-release]
+    needs: [setup]
     runs-on: ubuntu-latest
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu
@@ -120,7 +103,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
-    needs: [setup, create-release]
+    needs: [setup]
     runs-on: ubuntu-20.04
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu1804
@@ -172,7 +155,7 @@ jobs:
           path: dist
 
   macos:
-    needs: [setup, create-release]
+    needs: [setup]
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
