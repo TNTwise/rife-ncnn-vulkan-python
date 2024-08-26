@@ -156,31 +156,27 @@ class Rife:
         """
         Used in instances where the scene change is active, and the frame needs to be uncached.
         """
-        self.image0_bytes = None
         self.raw_in_image0 = None
-        
+    
 
-    def process_bytes(self, image0_bytes, image1_bytes, timestep: float = 0.5) -> np.ndarray:
+
+    def process_bytes(self, image0_bytes: bytes, image1_bytes: bytes, timestep: float = 0.5) -> np.ndarray:
         if timestep == 0.:
             return image0_bytes
         elif timestep == 1.:
             return image1_bytes
         
-        if self.image0_bytes is None:
-            self.image0_bytes = bytearray(image0_bytes)
+        if self.raw_in_image0 is None:
             self.raw_in_image0 = wrapped.Image(
-                self.image0_bytes, self.width, self.height, self.channels
+                bytearray(image0_bytes), self.width, self.height, self.channels
             )
-        image1_bytes = bytearray(image1_bytes)
-        
         raw_in_image1 = wrapped.Image(
-            image1_bytes, self.width, self.height, self.channels
+            bytearray(image1_bytes), self.width, self.height, self.channels
         )
         
 
         self._rife_object.process(self.raw_in_image0, raw_in_image1, timestep, self.raw_out_image)
         
-        self.image0_bytes = image1_bytes
         self.raw_in_image0 = raw_in_image1
 
         return bytes(self.output_bytes)
