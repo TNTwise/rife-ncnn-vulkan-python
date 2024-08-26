@@ -120,15 +120,10 @@ jobs:
         run: |
           WHL_FILE=$(ls dist/*.whl)
           echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: upload
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.WHL_FILE }}
-          asset_name: ${{ env.WHL_FILE }}
-          asset_content_type: application/zip
+          path: dist
 
   ubuntu-1804:
     strategy:
@@ -180,15 +175,10 @@ jobs:
         run: |
           WHL_FILE=$(ls dist/*.whl)
           echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: upload
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.WHL_FILE }}
-          asset_name: ${{ env.WHL_FILE }}
-          asset_content_type: application/zip
+          path: dist
 
   macos:
     needs: [setup, create-release]
@@ -240,12 +230,7 @@ jobs:
         run: |
             WHL_FILE=$(ls dist/*.whl)
             echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: upload
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.WHL_FILE }}
-          asset_name: ${{ env.WHL_FILE }}
-          asset_content_type: application/zip
+          path: dist
