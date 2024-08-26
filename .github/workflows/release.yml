@@ -93,11 +93,6 @@ jobs:
         run: |
           python -m build -w .
           
-      - name: Get .whl file name
-        id: get-whl
-        run: |
-          WHL_FILE=$(ls dist/*.whl)
-          echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
       - name: upload
         uses: actions/upload-artifact@v3
         with:
@@ -148,11 +143,10 @@ jobs:
           export VULKAN_SDK=`pwd`/1.2.198.1/x86_64
           export CMAKE_FLAGS="-DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
-      - name: Get .whl file name
-        id: get-whl
-        run: |
-          WHL_FILE=$(ls dist/*.whl)
-          echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
+          
+      - name: replace whl name
+        run: python3 replace_whl.py
+          
       - name: upload
         uses: actions/upload-artifact@v3
         with:
