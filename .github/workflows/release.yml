@@ -11,7 +11,11 @@ jobs:
     outputs:
       APPNAME: ${{ steps.get_appname.outputs.APPNAME }}
       VERSION: ${{ steps.get_version.outputs.VERSION }}
+      DATE: ${{ steps.get_date.outputs.DATE }}
     steps:
+      - name: Get current date
+        id: get_date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Get app name
         id: get_appname
         run: echo ::set-output name=APPNAME::${{ github.event.repository.name }}
