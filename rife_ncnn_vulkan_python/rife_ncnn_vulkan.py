@@ -62,10 +62,11 @@ class Rife:
         # determine if rife-v2 is used
         rife_v2 = ("rife-v2" in model) or ("rife-v3" in model)
         rife_v4 = "rife-v4" in model or "rife4" in model or "rife-4" in model
+        extra_padding = ("rife-v4.25" in model) or ("rife-v4.26" in model)
 
         # create raw RIFE wrapper object
         self._rife_object = wrapped.RifeWrapped(
-            gpuid, tta_mode, tta_temporal_mode, uhd_mode, num_threads, rife_v2, rife_v4
+            gpuid, tta_mode, tta_temporal_mode, uhd_mode, num_threads, rife_v2, rife_v4, extra_padding
         )
         self._load(model)
         
