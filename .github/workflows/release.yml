@@ -156,10 +156,10 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-macos
-    runs-on: macos-14
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:
