@@ -4,7 +4,7 @@
 RifeWrapped::RifeWrapped(int gpuid, bool _tta_mode, bool _tta_temporal_mode, bool _uhd_mode,
                          int _num_threads, bool _rife_v2, bool _rife_v4, bool _extra_padding)
     : RIFE(gpuid, _tta_mode, _tta_temporal_mode, _uhd_mode,
-           _num_threads, _rife_v2, _rife_v4, extra_padding)
+           _num_threads, _rife_v2, _rife_v4, _extra_padding)
 {
 }
 
