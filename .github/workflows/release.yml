@@ -70,7 +70,7 @@ jobs:
           python -m build -w .
      
       - name: upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist
 
@@ -94,7 +94,7 @@ jobs:
           python -m build -w .
           
       - name: upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist
 
@@ -148,7 +148,7 @@ jobs:
         run: python3 replace_whl.py
           
       - name: upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist
 
@@ -159,7 +159,7 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-macos
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v2
         with:
@@ -203,7 +203,7 @@ jobs:
             WHL_FILE=$(ls dist/*.whl)
             echo "WHL_FILE=$WHL_FILE" >> $GITHUB_ENV
       - name: upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist
   Release:
