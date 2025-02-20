@@ -72,7 +72,7 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: windows
+          name: windows-${{ matrix.runs-on }}
           path: dist
 
 
@@ -128,7 +128,7 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: linux
+          name: linux-${{ matrix.runs-on }}
           path: dist
 
   macos:
@@ -186,7 +186,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: macos
+          name: macos-${{ matrix.runs-on }}
   Release:
     needs: [setup, windows, macos, linux]
     runs-on: ubuntu-latest
