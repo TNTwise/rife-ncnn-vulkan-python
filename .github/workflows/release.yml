@@ -72,31 +72,9 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
+          name: windows
           path: dist
 
-  ubuntu:
-    needs: [setup]
-    runs-on: ubuntu-latest
-    env:
-      PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu
-      DEBIAN_FRONTEND: noninteractive
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libvulkan-dev glslang-dev glslang-tools
-          pip install build
-      - name: Build
-        run: |
-          python -m build -w .
-          
-      - name: upload
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist
 
   linux:
     strategy:
@@ -150,6 +128,7 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
+          name: linux
           path: dist
 
   macos:
@@ -207,6 +186,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
+          name: macos
   Release:
     needs: [setup, windows, macos, linux]
     runs-on: ubuntu-latest
