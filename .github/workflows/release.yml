@@ -72,8 +72,8 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: windows-${{ matrix.runs-on }}
-          path: dist
+          name: windows-${{ matrix.python-version }}
+          path: dist/
 
 
   linux:
@@ -128,8 +128,9 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: linux-${{ matrix.runs-on }}
-          path: dist
+          name: linux-${{ matrix.python-version }}
+          path: dist/
+
 
   macos:
     needs: [setup]
@@ -186,7 +187,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: macos-x86_64
+          name: macos-x86_64-${{ matrix.python-version }}
+
 
   macos-arm:
     needs: [setup]
@@ -243,7 +245,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: dist
-          name: macos-arm64
+          name: macos-arm64-${{ matrix.python-version }}
+
 
   Release:
     needs: [setup, windows, macos, macos-arm, linux]
@@ -255,8 +258,8 @@ jobs:
   
       - name: dist
         run: |
-          mkdir dist
-          cp asset/artifact/* dist
+          mkdir -p dist
+          find asset -type f -name "*.whl" -exec cp {} dist/ \;
           cd dist && ls
   
       
