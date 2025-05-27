@@ -90,6 +90,7 @@ def download_models() -> None:
 cmake_flags = [
     "-DBUILD_SHARED_LIBS:BOOL=OFF",
     "-DCALL_FROM_SETUP_PY:BOOL=ON",
+    '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
 ]
 cmake_flags.extend(os.environ.get("CMAKE_FLAGS", "").split())
 
