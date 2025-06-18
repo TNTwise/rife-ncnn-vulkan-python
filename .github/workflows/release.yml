@@ -43,9 +43,7 @@ jobs:
       
       - name: vulkansdk
         run: |
-          Invoke-WebRequest -Uri https://github.com/TNTwise/rife-ncnn-vulkan-python/releases/download/VulkanSDK/VulkanSDK-1.2.198.1-Installer.exe -OutFile VulkanSDK-1.2.198.1-Installer.exe
-          7z x -aoa ./VulkanSDK-1.2.198.1-Installer.exe -oVulkanSDK
-          dir .\VulkanSDK\
+          winget install --id=KhronosGroup.VulkanSDK  -e
           
       - uses: actions/setup-python@v5
         with:
@@ -59,7 +57,6 @@ jobs:
           pip install build
       - name: Build
         run: |
-          $env:VULKAN_SDK="$(pwd)\VulkanSDK"
           $env:CMAKE_FLAGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
      
@@ -95,17 +92,13 @@ jobs:
      
       - name: vulkansdk
         run: |
-          wget https://github.com/TNTwise/rife-ncnn-vulkan-python/releases/download/VulkanSDK/vulkansdk-linux-x86_64-1.2.198.1.tar.gz -O vulkansdk-linux-x86_64-1.2.198.1.tar.gz
-          tar -xvzf vulkansdk-linux-x86_64-1.2.198.1.tar.gz
-          rm -rf 1.2.198.1/source 1.2.198.1/samples
-          find 1.2.198.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+          sudo apt install libvulkan-dev
 
       - name: Install dependencies
         run: |
           pip install build
       - name: Build
         run: |
-          export VULKAN_SDK=`pwd`/1.2.198.1/x86_64
           export CMAKE_FLAGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
           
@@ -135,7 +128,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: x64
+          architecture: aarch64
 
       - name: Check Python version
         run: |
@@ -143,17 +136,13 @@ jobs:
      
       - name: vulkansdk
         run: |
-          wget https://github.com/TNTwise/rife-ncnn-vulkan-python/releases/download/VulkanSDK/vulkansdk-linux-x86_64-1.2.198.1.tar.gz -O vulkansdk-linux-x86_64-1.2.198.1.tar.gz
-          tar -xvzf vulkansdk-linux-x86_64-1.2.198.1.tar.gz
-          rm -rf 1.2.198.1/source 1.2.198.1/samples
-          find 1.2.198.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+          sudo apt install libvulkan-dev
 
       - name: Install dependencies
         run: |
           pip install build
       - name: Build
         run: |
-          export VULKAN_SDK=`pwd`/1.2.198.1/x86_64
           export CMAKE_FLAGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPY_VERSION=${{ matrix.python-version }}"
           python -m build -w .
           
@@ -163,7 +152,7 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: linux-${{ matrix.python-version }}
+          name: linuxarm-${{ matrix.python-version }}
           path: dist/
           
   macos:
