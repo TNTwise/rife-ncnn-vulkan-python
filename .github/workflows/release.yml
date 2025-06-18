@@ -75,7 +75,7 @@ jobs:
       matrix:
         python-version: ["3.12","3.13"]
     needs: [setup]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu1804
       DEBIAN_FRONTEND: noninteractive
@@ -118,7 +118,54 @@ jobs:
           name: linux-${{ matrix.python-version }}
           path: dist/
 
+  linux-arm:
+    strategy:
+      matrix:
+        python-version: ["3.12","3.13"]
+    needs: [setup]
+    runs-on: ubuntu-22.04-arm
+    env:
+      PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-ubuntu1804
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Check Python version
+        run: |
+          python --version
+     
+      - name: vulkansdk
+        run: |
+          wget https://github.com/TNTwise/rife-ncnn-vulkan-python/releases/download/VulkanSDK/vulkansdk-linux-x86_64-1.2.198.1.tar.gz -O vulkansdk-linux-x86_64-1.2.198.1.tar.gz
+          tar -xvzf vulkansdk-linux-x86_64-1.2.198.1.tar.gz
+          rm -rf 1.2.198.1/source 1.2.198.1/samples
+          find 1.2.198.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+
+      - name: Install dependencies
+        run: |
+          pip install build
+      - name: Build
+        run: |
+          export VULKAN_SDK=`pwd`/1.2.198.1/x86_64
+          export CMAKE_FLAGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPY_VERSION=${{ matrix.python-version }}"
+          python -m build -w .
+          
+      - name: replace whl name
+        run: python3 replace_whl.py
+          
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.python-version }}
+          path: dist/
+          
   macos:
     needs: [setup]
     strategy:
