@@ -36,7 +36,17 @@ jobs:
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-windows
     steps:
+      - name: Check for winget
+        id: have_winget
+        shell: pwsh
+        run: |
+          if (Get-Command winget -ErrorAction SilentlyContinue) {
+            echo "found=true" >> $GITHUB_OUTPUT
+          } else {
+            echo "found=false" >> $GITHUB_OUTPUT
+          }
       - name: Install winget
+        if: ${{ steps.have_winget.outputs.found == 'false' }}
         uses: Cyberboss/install-winget@v1
         
       - uses: actions/checkout@v2
