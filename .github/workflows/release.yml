@@ -28,7 +28,7 @@ jobs:
   windows:
     strategy:
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12", "3.13", "3.14"]
 
     needs: [setup]
     
@@ -73,7 +73,7 @@ jobs:
   linux:
     strategy:
       matrix:
-        python-version: ["3.12","3.13"]
+        python-version: ["3.12","3.13", "3.14"]
     needs: [setup]
     runs-on: ubuntu-22.04
     env:
@@ -117,7 +117,7 @@ jobs:
   linux-arm:
     strategy:
       matrix:
-        python-version: ["3.12","3.13"]
+        python-version: ["3.12","3.13", "3.14"]
     needs: [setup]
     runs-on: ubuntu-22.04-arm
     env:
@@ -162,7 +162,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        python-version: ["3.12","3.13"]
+        python-version: ["3.12","3.13", "3.14"]
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-macos-x86_64
     runs-on: macos-13
@@ -215,7 +215,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        python-version: ["3.12","3.13"]
+        python-version: ["3.12","3.13", "3.14"]
     env:
       PACKAGENAME: ${{ needs.setup.outputs.APPNAME }}-${{ needs.setup.outputs.VERSION }}-macos-arm64
     runs-on: macos-14
